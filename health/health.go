@@ -5,9 +5,8 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
+	healthv1 "github.com/worldline-go/grpc/health/v1"
 	"github.com/worldline-go/grpc/health/v1/healthv1connect"
-
-	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 // Check checks the health of the service.
@@ -19,12 +18,13 @@ func Check(ctx context.Context, client connect.HTTPClient, serviceName string, o
 	}
 
 	healthClient := healthv1connect.NewHealthClient(client, o.BaseURL, o.ClientOptions...)
-	healthRequest := &healthpb.HealthCheckRequest{Service: serviceName}
+	healthRequest := &healthv1.HealthCheckRequest{Service: serviceName}
+
 	resp, err := healthClient.Check(ctx, connect.NewRequest(healthRequest))
 	if err != nil {
 		return err
-	} else if resp.Msg.GetStatus() != healthpb.HealthCheckResponse_SERVING {
-		return fmt.Errorf("agent health check failed: %s", resp.Msg.Status.String())
+	} else if resp.Msg.GetStatus() != healthv1.HealthCheckResponse_SERVING {
+		return fmt.Errorf("agent health check failed: %s", resp.Msg.GetStatus().String())
 	}
 
 	return nil

@@ -3,11 +3,11 @@ managed:
   enabled: true
   override:
     - file_option: go_package_prefix
-      value: github.com/worldline-go/grpc/go
+      value: github.com/worldline-go/grpc
 plugins:
   - local: protoc-gen-go
-    out: ../_gen_go
+    out: ../
     opt: paths=source_relative
   - local: protoc-gen-connect-go
-    out: ../_gen_go
+    out: ../
     opt: paths=source_relative

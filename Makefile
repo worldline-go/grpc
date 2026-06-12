@@ -1,6 +1,6 @@
 ################################################################################
 # Generate gRPC code
-# Set PROTO_PATH variable before to use
+# Set PROTO_PATH variable before to use like 'make proto PROTO_PATH=health/v1'
 ################################################################################
 
 .DEFAULT_GOAL := help
