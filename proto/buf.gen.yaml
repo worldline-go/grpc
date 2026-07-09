@@ -5,9 +5,22 @@ managed:
     - file_option: go_package_prefix
       value: github.com/worldline-go/grpc
 plugins:
-  - local: protoc-gen-go
-    out: ../
-    opt: paths=source_relative
+  # NOTE: protoc-gen-go is intentionally disabled.
+  #
+  # health/v1/health.proto is a verbatim copy of grpc.health.v1 and would
+  # register the "grpc.health.v1.*" messages a second time in the global
+  # protobuf registry, panicking with a namespace conflict whenever a binary
+  # also links google.golang.org/grpc/health/grpc_health_v1 (any grpc-go health
+  # server). Instead, health/v1/health.go re-exports the grpc-go message types
+  # via aliases (single registration, backward-compatible import path), and we
+  # only generate the connect service bindings here.
+  #
+  # If you add a NEW proto that does not clash with grpc-go, re-enable
+  # protoc-gen-go (and consider scoping generation with `make proto PROTO_PATH=...`).
+  #
+  # - local: protoc-gen-go
+  #   out: ../
+  #   opt: paths=source_relative
   - local: protoc-gen-connect-go
     out: ../
     opt: paths=source_relative
